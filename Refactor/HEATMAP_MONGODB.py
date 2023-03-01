@@ -14,7 +14,7 @@ from pymongo import MongoClient
 AUTH = os.environ.get('DB_MONGODB_IMDB')
 cluster = MongoClient(AUTH)
 db = cluster["test"]
-collection = db["imdb"]
+collection = db["imdbs"]
 
 warnings.filterwarnings('ignore')
 
@@ -77,12 +77,21 @@ def serialize_json(result_matrix, result_metrics, title):
                            "metrics": result_metrics})
     print(f"Successfully uploaded {title}!")
 
+    # with open(f"./heatmap_parsed/HEATMAP_{clean_title}.json", "w") as f:
+    #     json.dump({
+    #         "ratings": result_matrix[0],
+    #         "votes": result_matrix[1],
+    #         "metrics": result_metrics
+    #     }, f, indent=4, ensure_ascii=False)
+    # with open(f"./heatmap_parsed/HEATMAP_{clean_title}_METRICS.json", "w") as f:
+    #     json.dump(result_metrics, f, indent=4, ensure_ascii=False)
+
 
 if __name__ == "__main__":
     START_ZERO = datetime.now()
     db_user = os.environ.get('DB_USER_imdb')
     db_pw = os.environ.get('DB_PASSWORD_imdb')
-    connection = mysql.connector.connect(host="localhost", user=db_user, passwd=db_pw, database="imdb_dec_2022")
+    connection = mysql.connector.connect(host="localhost", user=db_user, passwd=db_pw, database="imdb_march_2023")
 
     test_series = pd.read_json("./data/daniel_series_watched.json").T
 

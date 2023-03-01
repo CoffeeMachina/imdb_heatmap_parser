@@ -82,7 +82,7 @@ if __name__ == "__main__":
     START_ZERO = datetime.now()
     db_user = os.environ.get('DB_USER_imdb')
     db_pw = os.environ.get('DB_PASSWORD_imdb')
-    connection = mysql.connector.connect(host="localhost", user=db_user, passwd=db_pw, database="imdb_dec_2022")
+    connection = mysql.connector.connect(host="localhost", user=db_user, passwd=db_pw, database="imdb_march_2023")
 
     test_series = pd.read_json("./data/daniel_series_watched.json").T
 
