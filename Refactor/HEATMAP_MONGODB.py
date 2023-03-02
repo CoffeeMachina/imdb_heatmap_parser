@@ -106,7 +106,7 @@ if __name__ == "__main__":
             SERIES_QUERY = title
             print(f"Searching for {title}...")
 
-            q1 = "SELECT a.tconst, parentTconst, seasonNumber, episodeNumber, startYear,averageRating ,numVotes,primaryTitle, runtimeMinutes FROM title_episode a JOIN title_ratings b ON a.tconst = b.tconst JOIN title_basics c ON a.tconst = c.tconst WHERE parentTconst = '" + tconst + "'"
+            q1 = "SELECT a.tconst, parentTconst, seasonNumber, episodeNumber, startYear,averageRating ,numVotes,primaryTitle, runtimeMinutes FROM title_episode_cleaned a JOIN title_ratings b ON a.tconst = b.tconst JOIN title_basics c ON a.tconst = c.tconst WHERE parentTconst = '" + tconst + "'"
 
             ga = pd.read_sql_query(q1, connection)
             # ga2 = pd.read_sql_query(q2, connection)
@@ -129,8 +129,8 @@ if __name__ == "__main__":
             # with open(f"./heatmap_parsed/HEATMAP_{SERIES_QUERY.replace(' ', '_')}_METRICS.json", "w") as f:
             #     json.dump(result_metrics, f, indent=4, ensure_ascii=False)
             print(datetime.today(), " : ", title, " finished parsing...")
-        except:
-            print(title, " failed to parse")
+        except():
+            print(title, " failed to parse:::")
 
     # print(datetime.now() - START)
     print(datetime.today(), " : ", "ALL SERIES DONE PARSING.")

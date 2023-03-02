@@ -14,7 +14,7 @@ from pymongo import MongoClient
 AUTH = os.environ.get('DB_MONGODB_IMDB')
 cluster = MongoClient(AUTH)
 db = cluster["test"]
-collection = db["imdb"]
+collection = db["imdbs"]
 
 warnings.filterwarnings('ignore')
 
@@ -58,15 +58,19 @@ def imdb_series_metrics(dataframe, tconst, series_name):
         'max_score': float(round(dataframe['averageRating'].max(), 2)),
         'std_rating': float(round(dataframe['averageRating'].std(), 2)),
         'min_votes': float(round(dataframe['numVotes'].min(), 2)),
-        'max_votes': float(round(dataframe['numVotes'].min(), 2)),
-        'average_votes': float(round(dataframe['numVotes'].min(), 2)),
-        'std_votes': float(round(dataframe['numVotes'].min(), 2)),
-        'total_votes': float(round(dataframe['numVotes'].min(), 2)),
+        'max_votes': float(round(dataframe['numVotes'].max(), 2)),
+        'average_votes': float(round(dataframe['numVotes'].mean(), 2)),
+        'std_votes': float(round(dataframe['numVotes'].std(), 2)),
+        'total_votes': float(round(dataframe['numVotes'].sum(), 2)),
     }
 
 
 def serialize_json(result_matrix, result_metrics, title):
     clean_title = "_".join(re.findall(r'[A-Za-z0-9]+', title))
+    collection.insert_one({"ratings": result_matrix[0],
+                           "votes": result_matrix[1],
+                           "metrics": result_metrics})
+    print(f"Successfully uploaded {title}!")
     with open(f"./HEATMAP_PARSED/HEATMAP_{clean_title}_FINAL.json", "w") as f:
         json.dump(
             {
@@ -97,7 +101,7 @@ if __name__ == "__main__":
             SERIES_QUERY = title
             print(f"Searching for {title}...")
 
-            q1 = "SELECT a.tconst, parentTconst, seasonNumber, episodeNumber, startYear,averageRating ,numVotes,primaryTitle, runtimeMinutes FROM title_episode a JOIN title_ratings b ON a.tconst = b.tconst JOIN title_basics c ON a.tconst = c.tconst WHERE parentTconst = '" + tconst + "'"
+            q1 = "SELECT a.tconst, parentTconst, seasonNumber, episodeNumber, startYear,averageRating ,numVotes,primaryTitle, runtimeMinutes FROM title_episode_cleaned a JOIN title_ratings b ON a.tconst = b.tconst JOIN title_basics c ON a.tconst = c.tconst WHERE parentTconst = '" + tconst + "'"
 
             ga = pd.read_sql_query(q1, connection)
             # ga2 = pd.read_sql_query(q2, connection)
